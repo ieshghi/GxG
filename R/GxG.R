@@ -49,7 +49,7 @@ gMatrix = R6::R6Class("gMatrix",
                       #' @param field if gPair has a field then this will be used as a weight when adding / superimposing gPairs
                       #' @param full whether to explicitly set missing entries to fill (warning setting full = FALSE may distort certain calculations, though safe for summing etc)
                       #' @author Marcin Imielinski                         
-                      initialize = function(gr = NULL, dat = NULL, field = NULL, fill = 0, full = NULL, na.rm = TRUE, agg.fun = sum, lower.tri = FALSE)
+                      initialize = function(gr = NULL, dat = NULL, field = NULL, fill = 0, full = NULL, na.rm = TRUE, agg.fun = sum, lower.tri = FALSE, keep.str = FALSE)
                       {
                         private$pdat = data.table()
                         private$pgr = NULL
@@ -78,7 +78,11 @@ gMatrix = R6::R6Class("gMatrix",
                         }
 
                         if (!is.null(gr))
-                          private$pgr = gr.stripstrand(gr)
+                          if (keep.str){
+                            private$pgr = gr
+                          } else {
+                            private$pgr = gr.stripstrand(gr)
+                          }
                         
                         if (!is.null(dat) && nrow(dat)>0)
                         {
@@ -132,8 +136,11 @@ gMatrix = R6::R6Class("gMatrix",
                               warning('Metadata column $index is reserved for gMatrix operations, removing / ignoring from provided GRanges')
                               gr$index = NULL
                             }
-
-                            gr = gr.stripstrand(private$pgr)
+                            if (keep.str){
+                              gr = private$pgr
+                            } else {
+                              gr = gr.stripstrand(private$pgr)
+                            }
                             dgr = gr.disjoin(gr)
                             dgr = dgr[order(gr.match(dgr, gr))] ## resort in order of gr
                             is.diff = !identical(gr[, c()], dgr[, c()])
@@ -2544,8 +2551,13 @@ gPair = R6::R6Class("gPair",
                             stop('meta must have the same number of rows as gr1 and gr2')
                         }
                         
-                        private$pgr1 = gr.stripstrand(gr1)
-                        private$pgr2 = gr.stripstrand(gr2)
+                        if (keep.str){
+                          private$pgr1 = gr1
+                          private$pgr2 = gr2
+                        } else {
+                          private$pgr1 = gr.stripstrand(gr1)
+                          private$pgr2 = gr.stripstrand(gr2)
+                        }
                         private$pmeta = meta                           
                         return(self)
                       },
