@@ -1064,7 +1064,7 @@ gMatrix = R6::R6Class("gMatrix",
 #' @return A new gMatrix object
 #' @author Marcin Imielinski                         
 #' @export
-gM = function(gr = NULL, dat = NULL, outer = NULL, field = NULL, full = FALSE, fill = 0, agg.fun = sum, na.rm = TRUE, lower.tri = FALSE)
+gM = function(gr = NULL, dat = NULL, outer = NULL, field = NULL, full = FALSE, fill = 0, agg.fun = sum, na.rm = TRUE, lower.tri = FALSE,keep.str = FALSE)
 {
   if (deparse(substitute(dat)) != "NULL")
   {
@@ -1113,7 +1113,7 @@ gM = function(gr = NULL, dat = NULL, outer = NULL, field = NULL, full = FALSE, f
     dat = dat[value!=fill, ]
   }
 
-  return(gMatrix$new(gr, dat, field = field, full = full, fill = fill, agg.fun = agg.fun, na.rm = na.rm, lower.tri = lower.tri))
+  return(gMatrix$new(gr, dat, field = field, full = full, fill = fill, agg.fun = agg.fun, na.rm = na.rm, lower.tri = lower.tri, keep.str = keep.str))
 }
 
 
